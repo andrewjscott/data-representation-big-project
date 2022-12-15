@@ -1,0 +1,7 @@
+mysql = {
+    'host':"localhost",
+    'user':"root",
+    'password':"root",
+    'database':"project",
+    'apikey':"2bda4dd8e16d4c0f83eb8a2c64c44576"
+}

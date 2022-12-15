@@ -1,39 +1,19 @@
-# Import required modules
-from flask import Flask, request
-import mysql.connector
+import requests
+import dbconfig as cfg
 
-# Create Flask app and configure database
-app = Flask(__name__, static_url_path='', static_folder='static')
-config = {
-    'user': 'user',
-    'password': 'password',
-    'host': 'localhost',
-    'database': 'newsapp',
+
+# Set API key
+api_key = cfg.mysql['apikey']
+
+# Set request parameters
+params = {
+    "apiKey": api_key,
+    "q": "technology",
+    "sortBy": "publishedAt",
 }
-cnx = mysql.connector.connect(**config)
 
-# Define NewsSource model
-class NewsSource:
-    def __init__(self, name, url):
-        self.name = name
-        self.url = url
+# Make request to News API
+response = requests.get("https://newsapi.org/v2/everything", params=params)
 
-# Create endpoint for creating a new news source
-@app.route('/api/news-sources', methods=['POST'])
-def create_news_source():
-    # Get data from request body
-    data = request.get_json()
-    name = data['name']
-    url = data['url']
-
-    # Create new NewsSource instance
-    news_source = NewsSource(name=name, url=url)
-
-    # Add news source to database
-    cursor = cnx.cursor()
-    query = f"INSERT INTO news_sources (name, url) VALUES ('{name}', '{url}')"
-    cursor.execute(query)
-    cnx.commit()
-
-    # Return success message
-    return flask.jsonify({'message': 'News source created successfully'})
+# Print response
+print(response.json())
