@@ -1,0 +1,15 @@
+<!-- template.html -->
+
+<h1>News Articles</h1>
+
+{% for article in articles %}
+  <h2>{{ article.title }}</h2>
+  <p>by {{ article.author }}</p>
+  <p>{{ article.description }}</p>
+  <p>Source: {{ article.source }}</p>
+  <a href="{{ article.url }}">Read more</a>
+{% endfor %}
+
+<!-- index.html -->
+
+<a href="/articles">View articles</a>

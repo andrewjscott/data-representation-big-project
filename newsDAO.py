@@ -28,72 +28,80 @@ class NewsDAO:
         self.connection.close()
         self.cursor.close()
 
-
     def create_source(self, values):     
-       cursor = self.getcursor()
-       sql="insert into newssource (name, url, keyword) values (%s,%s,%s)"
+       cursor = self.get_cursor()
+       sql="insert into newssource (source, keyword) values (%s,%s)"
        cursor.execute(sql, values)
        self.connection.commit()
        newid = cursor.lastrowid
-       self.closeAll()
+       self.close_all()
        return newid
 
     def get_all_source(self):
-        cursor = self.getcursor()
+        cursor = self.get_cursor()
         sql="select * from newssource"
         cursor.execute(sql)
         results = cursor.fetchall()
-        returnArray = []
+        return_array = []
         print(results)
         for result in results:
             print(result)
-            returnArray.append(self.convertToDictionary(result))     
-        self.closeAll()
-        return returnArray
+            return_array.append(self.convert_to_dictionary(result))     
+        self.close_all()
+        return return_array
+
+    def convert_to_dictionary(self, result):
+        colnames=['id','source', "keyword"]
+        item = {}   
+        if result:
+            for i, col_name in enumerate(colnames):
+                value = result[i]
+                item[col_name] = value       
+        return item
 
     def update_source(self, values):
-        cursor = self.getcursor()
-        sql="update newssource set name= %s, url=%s, keyword=%s  where id = %s"
+        cursor = self.get_cursor()
+        sql="update newssource set source= %s, keyword=%s  where id = %s"
         cursor.execute(sql, values)
         self.connection.commit()
-        self.closeAll()
+        self.close_all()
 
     def delete_source(self, id):
-        cursor = self.getcursor()
+        cursor = self.get_cursor()
         sql="delete from newssource where id = %s"
         values = (id,)
         cursor.execute(sql, values)
         self.db.commit()
-        self.closeAll()
+        self.close_all()
         print("Entry deleted")
 
     # Create a database that stores user input information such as the name of the source, url, and keyword
     def create_source_table(self):
-        cursor = self.getcursor()
+        cursor = self.get_cursor()
         sql = """
             CREATE TABLE newssource (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(255),
-            url VARCHAR(255),
+            source VARCHAR(255),
             keyword VARCHAR(255))
             """
         cursor.execute(sql)
         self.connection.commit()
-        self.closeAll()
+        self.close_all()
     
     # Database to store the results returned based on the information provided by the user in the source table
     def create_article_table(self):
-        cursor = self.getcursor()
+        cursor = self.get_cursor()
         sql = """
             CREATE TABLE newsarticles (
             id INT PRIMARY KEY AUTO_INCREMENT,
             newssource_id INT, FOREIGN KEY (newssource_id) REFERENCES newssource(id),
             title VARCHAR(255),
+            date_published DATETIME,
             url VARCHAR(255))
             """
         cursor.execute(sql)
         self.connection.commit()
-        self.closeAll()
+        self.close_all()
 
     def create_database(self):
         self.connection = mysql.connector.connect(
@@ -105,13 +113,13 @@ class NewsDAO:
         sql = "create database " + self.database
         self.cursor.execute(sql)
         self.connection.commit()
-        self.closeAll()
+        self.close_all()
 
 newsDAO = NewsDAO()
 
 if __name__ == "__main__":
     #newsDAO.create_database()
-    #newsDAO.create_source_table()
-    #newsDAO.create_article_table()
+    # newsDAO.create_source_table()
+    # newsDAO.create_article_table()
 
     print("testing")

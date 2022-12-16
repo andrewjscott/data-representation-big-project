@@ -3,11 +3,13 @@ import dbconfig as cfg
 
 
 # Set API key
-api_key = cfg.mysql['apikey']
+api_key = cfg.api_keys['newsapikey']
 
 # Set request parameters
 params = {
     "apiKey": api_key,
+    "sources": 'bbc-news',
+
     "q": "technology",
     "sortBy": "publishedAt",
 }
