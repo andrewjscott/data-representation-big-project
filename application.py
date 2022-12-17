@@ -3,58 +3,62 @@ import requests
 import dbconfig as cfg
 from flask import render_template
 from newsDAO import newsDAO
-
+from datetime import datetime
 
 app = Flask(__name__, static_url_path='', static_folder='static')
 
-
 def get_articles(source, keyword):
     api_key = cfg.api_keys['newsapikey']
-    base_url = "https://newsapi.org/v2/everything"
-  
+    base_url = "https://newsapi.org/v2/everything" 
     params = {
         "sources": source,
         "q": keyword,
         "apiKey": api_key
     }
-  
-    response = requests.get(base_url, params=params)
-  
+    response = requests.get(base_url, params=params) 
     if response.status_code == 200:
         articles = response.json()["articles"]
-    
         for article in articles:
             title = article["title"]
             author = article["author"]
             description = article["description"]
             url = article["url"]
             date_published = article["publishedAt"]
-            source = article["source"]["name"]
-        
-        return articles
-      
+            source = article["source"]["name"]       
+        return articles      
     else:
         print(f"Request failed with status code {response.status_code}")
 
-# Accessing different elements of the returned articles
-# https://www.geeksforgeeks.org/python-get-values-of-particular-key-in-list-of-dictionaries/
-x = get_articles("bbc-news", "stretch")
-urls = [ sub['url'] for sub in x ]
-titles = [ sub['title'] for sub in x ]
-date = [ sub['publishedAt'] for sub in x ] 
-
-
-# return the articles to display using the template.html file
+# return the articles to display using the template.html file, add to articles mysql table
 @app.route("/articles")
 def articles():
-    source = "bbc-news"
-    keyword = "stretch"   
+    # Uses the id of the source table to get the information to get articles from NewsAPI
+    source_info = newsDAO.get_id_source(2)
+    source = source_info["source"]
+    keyword = source_info["keyword"]   
     articles = get_articles(source, keyword)
+    for article in articles:
+        title = article["title"]
+        author = article["author"]
+        description = article["description"]
+        # The description can be longer than the MySQL limit so in case it's too long this shortens it
+        description = description[:255]
+        date = article["publishedAt"]
+        # Need to format the date to make it MySQL friendly
+        # Parse the date string using the datetime module
+        date_parse = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+        # Convert the date to a string in the format 'YYYY-MM-DD HH:mm:ss'
+        date_published = date_parse.strftime('%Y-%m-%d %H:%M:%S')
+        url = article["url"]
+        source = article["source"]["name"]
+        values = (title, author, description, date_published, url, source)
+        new_id = newsDAO.create_article(values)
+    # Use render template to display articles - https://www.geeksforgeeks.org/flask-rendering-templates/
     return render_template("template.html", articles=articles)
 
 # Add the sources to the sources mysql table 
 @app.route('/sources', methods=['POST'])
-def update():
+def update_sources():
     if not request.json:
         abort(400)
     # other checking 
@@ -62,7 +66,7 @@ def update():
         "source": request.json['source'],
         "keyword": request.json['keyword'],
     }
-    values =(source['source'], source['keyword'])
+    values = (source['source'], source['keyword'])
     new_id = newsDAO.create_source(values)
     source['id'] = new_id
     return jsonify(source)

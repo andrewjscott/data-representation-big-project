@@ -37,6 +37,15 @@ class NewsDAO:
        self.close_all()
        return newid
 
+    def create_article(self, values):     
+       cursor = self.get_cursor()
+       sql="insert into newsarticles (title, author, description, date_published, url, source) values (%s,%s,%s,%s,%s,%s)"
+       cursor.execute(sql, values)
+       self.connection.commit()
+       newid = cursor.lastrowid
+       self.close_all()
+       return newid
+
     def get_all_source(self):
         cursor = self.get_cursor()
         sql="select * from newssource"
@@ -49,6 +58,16 @@ class NewsDAO:
             return_array.append(self.convert_to_dictionary(result))     
         self.close_all()
         return return_array
+
+    def get_id_source(self, id):
+        cursor = self.get_cursor()
+        sql="select * from newssource where id = %s"
+        values = (id,)
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+        return_value = self.convert_to_dictionary(result)
+        self.close_all()
+        return return_value
 
     def convert_to_dictionary(self, result):
         colnames=['id','source', "keyword"]
@@ -94,10 +113,12 @@ class NewsDAO:
         sql = """
             CREATE TABLE newsarticles (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            newssource_id INT, FOREIGN KEY (newssource_id) REFERENCES newssource(id),
             title VARCHAR(255),
+            author VARCHAR(255),
+            description VARCHAR(255),
             date_published DATETIME,
-            url VARCHAR(255))
+            url VARCHAR(255),
+            source VARCHAR(255))
             """
         cursor.execute(sql)
         self.connection.commit()
