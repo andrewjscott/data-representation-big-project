@@ -52,10 +52,23 @@ class NewsDAO:
         cursor.execute(sql)
         results = cursor.fetchall()
         return_array = []
+        #print(results)
+        for result in results:
+            #print(result)
+            return_array.append(self.convert_to_dictionary_source(result))     
+        self.close_all()
+        return return_array
+
+    def get_all_articles(self):
+        cursor = self.get_cursor()
+        sql="select * from newsarticles"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        return_array = []
         print(results)
         for result in results:
-            print(result)
-            return_array.append(self.convert_to_dictionary(result))     
+            #print(result)
+            return_array.append(self.convert_to_dictionary_article(result))     
         self.close_all()
         return return_array
 
@@ -65,12 +78,21 @@ class NewsDAO:
         values = (id,)
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        return_value = self.convert_to_dictionary(result)
+        return_value = self.convert_to_dictionary_source(result)
         self.close_all()
         return return_value
 
-    def convert_to_dictionary(self, result):
+    def convert_to_dictionary_source(self, result):
         colnames=['id','source', "keyword"]
+        item = {}   
+        if result:
+            for i, col_name in enumerate(colnames):
+                value = result[i]
+                item[col_name] = value       
+        return item
+
+    def convert_to_dictionary_article(self, result):
+        colnames=['id','title', "author", "description", "date_published", "url", "source"]
         item = {}   
         if result:
             for i, col_name in enumerate(colnames):

@@ -29,6 +29,16 @@ def get_articles(source, keyword):
     else:
         print(f"Request failed with status code {response.status_code}")
 
+@app.route('/sourcesjson')
+def get_all_source():
+    results = newsDAO.get_all_source()
+    return jsonify(results)
+
+@app.route('/articlesjson')
+def get_all_articles():
+    results = newsDAO.get_all_articles()
+    return jsonify(results)
+
 # return the articles to display using the template.html file, add to articles mysql table
 @app.route("/articles")
 def articles():
