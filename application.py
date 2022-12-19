@@ -5,6 +5,7 @@ from flask import render_template
 from newsDAO import newsDAO
 from datetime import datetime
 
+
 app = Flask(__name__, static_url_path='', static_folder='static')
 
 def get_articles(source, keyword):
