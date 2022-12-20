@@ -1,6 +1,8 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Sources</title>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
     </head>
@@ -20,17 +22,17 @@
             </table>
         <br/>
         </div>
-        <div id="createUpdateForm" style="display:none">
-            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Source</h2>
-            id <input type="text" name="id"><br/>
-            Source <input type="text" name="source"><br/>
-            Keyword <input type="text" name="keyword"><br/>
-           
-            <span><button id="button-doAddSource" onclick="doAddSource()">Create</button></span>
- 			<span><button id="button-doUpdateSource" onclick="doUpdateSource()">Update</button></span>
+        <div>
+            <form id="createUpdateForm" style="display:none">
+                <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Source</h2>
+                Source <input type="text" name="source"><br/>
+                Keyword <input type="text" name="keyword"><br/>
+            
+                <span><button type="submit" id="button-doAddSource">Create</button></span>
+                <span><button id="button-doUpdateSource">Update</button></span>
 
+            </form>
         </div>
-        
     </body>
     <script>
         //Using fetch to populate table with MySQL database table content
@@ -46,7 +48,7 @@
             <td>${item.source}</td>
             <td>${item.keyword}</td>
             <td><button class="update-button" data-id="${item.id}">Update</button></td>
-            <td><button class="delete-button" data-id="${item.id}">Delete</button></td>`;
+            <td><button class="delete-button" data-id="${item.id}" onclick="deleteSource(event)">Delete</button></td>`;
             document.querySelector('#sourceTable').appendChild(row);
             });
         });
@@ -61,6 +63,31 @@
             document.getElementById("sourceTable").style.display = "none"  
         }
 
-        
+        // Adding sources input by the user to the table
+        var createUpdateForm = document.getElementById('createUpdateForm');
+        createUpdateForm.addEventListener('submit', function(event) {
+        // Use the fetch API to send the form data to the server
+            fetch('/sources', {
+                method: 'POST',
+                body: new FormData(createUpdateForm)
+            })
+            .then(response => response.text())
+            .then(text => console.log(text))
+        });
+
+        // Deleting source from the table
+        function deleteSource(event) {
+            console.log('Delete button clicked');
+            // Get the id of the row to be deleted
+            var id = event.target.getAttribute('data-id');
+            fetch('/sources/' + id, {
+                method: 'DELETE'
+            })
+            .then(response => response.text())
+            .then(text => {
+                console.log(text);
+                location.reload();})
+        }
+
     </script>
 </html>

@@ -112,7 +112,7 @@ class NewsDAO:
         sql="delete from newssource where id = %s"
         values = (id,)
         cursor.execute(sql, values)
-        self.db.commit()
+        self.connection.commit()
         self.close_all()
         print("Entry deleted")
 

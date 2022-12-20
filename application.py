@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 import requests
 import dbconfig as cfg
 from flask import render_template
@@ -44,7 +44,7 @@ def get_all_articles():
 @app.route("/articles")
 def articles():
     # Uses the id of the source table to get the information to get articles from NewsAPI
-    source_info = newsDAO.get_id_source(2)
+    source_info = newsDAO.get_id_source(1)
     source = source_info["source"]
     keyword = source_info["keyword"]   
     articles = get_articles(source, keyword)
@@ -65,22 +65,23 @@ def articles():
         values = (title, author, description, date_published, url, source)
         new_id = newsDAO.create_article(values)
     # Use render template to display articles - https://www.geeksforgeeks.org/flask-rendering-templates/
-    return render_template("template.html", articles=articles)
+    return render_template("articles.html", articles=articles)
 
 # Add the sources to the sources mysql table 
 @app.route('/sources', methods=['POST'])
 def update_sources():
-    if not request.json:
-        abort(400)
-    # other checking 
-    source = {
-        "source": request.json['source'],
-        "keyword": request.json['keyword'],
-    }
-    values = (source['source'], source['keyword'])
+    source = request.form['source']
+    keyword = request.form['keyword']  
+    values = (source, keyword)
     new_id = newsDAO.create_source(values)
     source['id'] = new_id
     return jsonify(source)
+
+# Delete source from sources mysql table
+@app.route('/sources/<int:id>' , methods=['DELETE'])
+def delete(id):
+    newsDAO.delete_source(id)
+    return jsonify({"done":True})
 
 
 if __name__ == "__main__":
