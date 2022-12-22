@@ -40,10 +40,12 @@ def get_all_articles():
     return jsonify(results)
 
 # return the articles to display using the template.html file, add to articles mysql table
-@app.route("/articles")
-def articles():
+@app.route("/articles/<int:id>")
+def articles(id):
+    # Get the id associated with the row the user wishes to see the results for
+    #id = request.args.get('id')
     # Uses the id of the source table to get the information to get articles from NewsAPI
-    source_info = newsDAO.get_id_source(id=1)
+    source_info = newsDAO.get_id_source(id)
     source = source_info["source"]
     keyword = source_info["keyword"]   
     articles = get_articles(source, keyword)

@@ -16,6 +16,7 @@
                         <th>Keyword</th>
                         <th>Update</th>
                         <th>Delete</th>
+                        <th>View Article Results</th>
                 </tr>  
             
             </table>
@@ -56,7 +57,8 @@
             <td>${item.source}</td>
             <td>${item.keyword}</td>
             <td><button class="update-button" data-id="${item.id}" onclick="showUpdateSource(this)">Update</button></td>
-            <td><button class="delete-button" data-id="${item.id}" onclick="deleteSource(event)">Delete</button></td>`;
+            <td><button class="delete-button" data-id="${item.id}" onclick="deleteSource(event)">Delete</button></td>
+            <td><button class="results-button" data-id="${item.id}" onclick="showResults(this)">Results</button></td>`;
             document.querySelector('#sourceTable').appendChild(row);
             });
         });
@@ -125,7 +127,6 @@
             var updateForm = document.getElementById('updateForm');
             updateForm.addEventListener('submit', function(event) {
                 id = source['id'];
-                console.log(id)
                 // https://stackoverflow.com/a/56908493
                 event.preventDefault();
                 // Use the fetch API to send the form data to the server
@@ -138,9 +139,24 @@
                     console.log(text);
                     location.reload();
                 })
-        });
-
+            });
         }
+
+        // Redirect to the article results
+        function showResults(button) {
+            // Get the id value from the data-id attribute of the button element
+            const id = button.getAttribute('data-id');
+            console.log(id)
+            // Send a GET request to the Flask route with the id value as a query parameter
+            fetch('/articles/' + id)
+                .then(response => response.text())
+                .then(html => {
+                // Render the template with the results
+                document.body.innerHTML = html;
+                });
+            }
+
+
         
             
 
