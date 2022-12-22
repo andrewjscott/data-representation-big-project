@@ -5,7 +5,6 @@ from flask import render_template
 from newsDAO import newsDAO
 from datetime import datetime
 
-
 app = Flask(__name__, static_url_path='', static_folder='static')
 
 def get_articles(source, keyword):
@@ -44,7 +43,7 @@ def get_all_articles():
 @app.route("/articles")
 def articles():
     # Uses the id of the source table to get the information to get articles from NewsAPI
-    source_info = newsDAO.get_id_source(1)
+    source_info = newsDAO.get_id_source(id=1)
     source = source_info["source"]
     keyword = source_info["keyword"]   
     articles = get_articles(source, keyword)
@@ -69,12 +68,11 @@ def articles():
 
 # Add the sources to the sources mysql table 
 @app.route('/sources', methods=['POST'])
-def update_sources():
+def add_sources():
     source = request.form['source']
     keyword = request.form['keyword']  
     values = (source, keyword)
-    new_id = newsDAO.create_source(values)
-    source['id'] = new_id
+    id = newsDAO.create_source(values)
     return jsonify(source)
 
 # Delete source from sources mysql table
@@ -82,6 +80,16 @@ def update_sources():
 def delete(id):
     newsDAO.delete_source(id)
     return jsonify({"done":True})
+
+# Update source from sources mysql table
+@app.route('/sources/<int:id>', methods=['PUT'])
+def update_source(id):
+    source = request.form['source']
+    keyword = request.form['keyword']
+    values = (source, keyword, id)
+    newsDAO.update_source(values)
+    return jsonify({"done":True})
+
 
 
 if __name__ == "__main__":

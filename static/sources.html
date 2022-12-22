@@ -2,9 +2,8 @@
 <html>
     <head>
         <title>Sources</title>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
+        <link rel="shortcut icon" href="#">
     </head>
     <body>
         <h1>Sources and Keywords</h1>
@@ -23,13 +22,22 @@
         <br/>
         </div>
         <div>
-            <form id="createUpdateForm" style="display:none">
-                <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Source</h2>
+            <form id="createForm" style="display:none">
+                <h2><span id="createLabel">Create a Source</span></h2>
                 Source <input type="text" name="source"><br/>
                 Keyword <input type="text" name="keyword"><br/>
             
                 <span><button type="submit" id="button-doAddSource">Create</button></span>
-                <span><button id="button-doUpdateSource">Update</button></span>
+
+            </form>
+        </div>
+        <div>
+            <form id="updateForm" style="display:none">
+                <h2><span id="updateLabel">Update this Source</span></h2>
+                Source <input type="text" name="source"><br/>
+                Keyword <input type="text" name="keyword"><br/>
+        
+                <span><button type="submit" id="button-doUpdateSource">Update</button></span>
 
             </form>
         </div>
@@ -47,38 +55,40 @@
             <td>${item.id}</td>
             <td>${item.source}</td>
             <td>${item.keyword}</td>
-            <td><button class="update-button" data-id="${item.id}">Update</button></td>
+            <td><button class="update-button" data-id="${item.id}" onclick="showUpdateSource(this)">Update</button></td>
             <td><button class="delete-button" data-id="${item.id}" onclick="deleteSource(event)">Delete</button></td>`;
             document.querySelector('#sourceTable').appendChild(row);
             });
         });
 
         function showAddSource(){
-            document.getElementById("createUpdateForm").style.display = "block"  
+            document.getElementById("createForm").style.display = "block"  
             document.getElementById("button-doAddSource").style.display = "block"
-            document.getElementById("button-doUpdateSource").style.display = "none"
             document.getElementById("createLabel").style.display = "inline"
-            document.getElementById("updateLabel").style.display = "none"
             document.getElementById("button-showAddSource").style.display = "none"
             document.getElementById("sourceTable").style.display = "none"  
         }
 
         // Adding sources input by the user to the table
-        var createUpdateForm = document.getElementById('createUpdateForm');
-        createUpdateForm.addEventListener('submit', function(event) {
-        // Use the fetch API to send the form data to the server
+        var createForm = document.getElementById('createForm');
+        createForm.addEventListener('submit', function(event) {
+            // https://stackoverflow.com/a/56908493
+            event.preventDefault();
+            // Use the fetch API to send the form data to the server
             fetch('/sources', {
                 method: 'POST',
-                body: new FormData(createUpdateForm)
+                body: new FormData(createForm)
             })
             .then(response => response.text())
-            .then(text => console.log(text))
+            .then(text => {
+                console.log(text);
+                location.reload();
+            })
         });
 
         // Deleting source from the table
         function deleteSource(event) {
-            console.log('Delete button clicked');
-            // Get the id of the row to be deleted
+            event.preventDefault();
             var id = event.target.getAttribute('data-id');
             fetch('/sources/' + id, {
                 method: 'DELETE'
@@ -86,8 +96,54 @@
             .then(response => response.text())
             .then(text => {
                 console.log(text);
-                location.reload();})
+                location.reload();
+            })
         }
+
+        // Updating source in table
+        function getSourceFromRow(rowElement){
+            var source ={}
+            source.id  = rowElement.cells[0].firstChild.textContent
+            source.source = rowElement.cells[1].firstChild.textContent
+            source.keyword = rowElement.cells[2].firstChild.textContent
+            return source
+        }
+        function populateFormWithSource(source){
+       		var form = document.getElementById('updateForm')
+       		form.querySelector('input[name="source"]').value= source.source
+        	form.querySelector('input[name="keyword"]').value= source.keyword
+        }
+        function showUpdateSource(buttonElement){
+            document.getElementById("updateForm").style.display = "block"           
+            document.getElementById("button-doUpdateSource").style.display = "block"
+            document.getElementById("updateLabel").style.display = "inline"
+            document.getElementById("sourceTable").style.display = "none"
+            rowElement= buttonElement.parentNode.parentNode
+            source = getSourceFromRow(rowElement)
+            populateFormWithSource(source)
+            
+            var updateForm = document.getElementById('updateForm');
+            updateForm.addEventListener('submit', function(event) {
+                id = source['id'];
+                console.log(id)
+                // https://stackoverflow.com/a/56908493
+                event.preventDefault();
+                // Use the fetch API to send the form data to the server
+                fetch('/sources/' + id, {
+                    method: 'PUT',
+                    body: new FormData(updateForm)
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text);
+                    location.reload();
+                })
+        });
+
+        }
+        
+            
+
 
     </script>
 </html>
