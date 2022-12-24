@@ -52,9 +52,7 @@ class NewsDAO:
         cursor.execute(sql)
         results = cursor.fetchall()
         return_array = []
-        #print(results)
         for result in results:
-            #print(result)
             return_array.append(self.convert_to_dictionary_source(result))     
         self.close_all()
         return return_array
@@ -65,9 +63,7 @@ class NewsDAO:
         cursor.execute(sql)
         results = cursor.fetchall()
         return_array = []
-        print(results)
         for result in results:
-            #print(result)
             return_array.append(self.convert_to_dictionary_article(result))     
         self.close_all()
         return return_array
@@ -161,8 +157,8 @@ class NewsDAO:
 newsDAO = NewsDAO()
 
 if __name__ == "__main__":
-    #newsDAO.create_database()
-    # newsDAO.create_source_table()
-    # newsDAO.create_article_table()
+    newsDAO.create_database()
+    #newsDAO.create_source_table()
+    #newsDAO.create_article_table()
 
     print("testing")

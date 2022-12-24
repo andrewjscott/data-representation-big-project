@@ -1,0 +1,22 @@
+.article-style {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+	box-shadow: 5px 5px 5px 2px black;
+    padding: 10px;
+    margin-bottom: 10px;
+    justify-items: center;
+	align-items: center;
+    background-color: lightcyan;
+  }
+
+body {
+	height: 100%;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	display: grid;
+	justify-items: center;
+	align-items: center;
+	background-color: #FCC400;
+}

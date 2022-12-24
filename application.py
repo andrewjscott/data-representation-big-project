@@ -4,9 +4,11 @@ import dbconfig as cfg
 from flask import render_template
 from newsDAO import newsDAO
 from datetime import datetime
+import mysql.connector
 
 app = Flask(__name__, static_url_path='', static_folder='static')
 
+# Use the source id and keyword provided to fetch news articles using NewsAPI
 def get_articles(source, keyword):
     api_key = cfg.api_keys['newsapikey']
     base_url = "https://newsapi.org/v2/everything" 
@@ -29,15 +31,22 @@ def get_articles(source, keyword):
     else:
         print(f"Request failed with status code {response.status_code}")
 
+# Return all the entries in the sources database table in JSON format
 @app.route('/sourcesjson')
 def get_all_source():
     results = newsDAO.get_all_source()
     return jsonify(results)
 
+# Return all the entries in the sources articles table in JSON format
 @app.route('/articlesjson')
 def get_all_articles():
     results = newsDAO.get_all_articles()
     return jsonify(results)
+
+@app.route('/articles')
+def view_all_articles():
+    articles = newsDAO.get_all_articles()
+    return render_template("all_articles.html", articles=articles)
 
 # return the articles to display using the template.html file, add to articles mysql table
 @app.route("/articles/<int:id>")
@@ -51,6 +60,7 @@ def articles(id):
     articles = get_articles(source, keyword)
     for article in articles:
         title = article["title"]
+        title = title[:255]
         author = article["author"]
         description = article["description"]
         # The description can be longer than the MySQL limit so in case it's too long this shortens it

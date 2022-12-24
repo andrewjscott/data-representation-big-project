@@ -3,11 +3,22 @@
     <head>
         <title>Sources</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <link rel="shortcut icon" href="#">
+        <link rel="shortcut icon" href="/favicon.ico?">
+        <link rel="stylesheet" href="sources.css">
+        <!--To ensure the page will adapt size depending on screen size https://www.w3schools.com/css/css_rwd_viewport.asp -->
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <h1>Sources and Keywords</h1>
-        <div><button id="button-showAddSource" onclick="showAddSource()">Add News Source</button><br/><br/></div>
+        <div class="blurb" id="blurb1">
+            The table below can be used to retreive news articles using NewsAPI based on the source provided and keywords.<br/>
+            To add a new source just provide the news source id and the keyword you want your results to contain.<br/>
+            Click on results to see a summary of the results returned by your search.<br/>
+            If you want your keyword to be a phrase or a person's full name, simply add it in quotation marks e.g. "data science", "Tom Jones".<br/>
+            If you wish to see a database table of past article results click <a href="/articles" target="_blank">here</a>.
+        </div>
+        <br/>
+        <div><br/><button id="button-showAddSource" onclick="showAddSource()">Add News Source</button><br/><br/></div>
         <div>
             <table border="1" id="sourceTable">
                 <tr>
@@ -21,6 +32,75 @@
             
             </table>
         <br/>
+        <div class="blurb" id="blurb2">
+            The table below shows some of the most popular source IDs you may wish to use.<br/>
+            NewsAPI has over 80,000 to choose from so if an ID you're looking for isn't here, you can try find it from their website 
+            <a href="https://newsapi.org/sources" target="_blank">here</a>.
+        </div>
+        <br/>
+            <table border="1" id="sourceIDs">
+                <tr>
+                    <th>News</th>
+                    <th>Sport</th>
+                    <th>Entertainment</th>
+                    <th>Technology</th>
+                </tr>
+                <tr>
+                    <td>rte</td>
+                    <td>espn</td>
+                    <td>entertainment-weekly</td>
+                    <td>techcrunch</td>
+                </tr>
+              <tr>
+                    <td>bbc-news</td>
+                    <td>bbc-sport</td>
+                    <td>mtv-news</td>
+                    <td>techradar</td>
+              </tr>
+              <tr>
+                    <td>the-irish-times</td>
+                    <td>fox-sports</td>
+                    <td>buzzfeed</td>
+                    <td>the-next-web</td>
+              </tr>
+              <tr>
+                    <td>cnn</td>
+                    <td>nfl-news</td>
+                    <td>ign</td>
+                    <td>wired</td>
+              </tr>
+              <tr>
+                    <td>google-news</td>
+                    <td>bleacher-report</td>
+                    <td>mashable</td>
+                    <td>recode</td>
+              </tr>
+              <tr>
+                    <td>associated-press</td>
+                    <td>talksport</td>
+                    <td>polygon</td>
+                    <td>engadget</td>
+              </tr>
+              <tr>
+                    <td>nbc-news</td>
+                    <td>four-four-two</td>
+                    <td>reddit-r-all</td>
+                    <td>ign</td>
+              </tr>
+              <tr>
+                    <td>newsweek</td>
+                    <td>the-sport-bible</td>
+                    <td>the-lad-bible</td>
+                    <td>ars-technica</td>
+              </tr>
+              <tr>
+                    <td>reuters</td>
+                    <td>nhl-news</td>
+                    <td>mtv-news-uk</td>
+                    <td>the-verge</td>
+              </tr>
+            </table>
+          
         </div>
         <div>
             <form id="createForm" style="display:none">
@@ -28,7 +108,10 @@
                 Source <input type="text" name="source"><br/>
                 Keyword <input type="text" name="keyword"><br/>
             
-                <span><button type="submit" id="button-doAddSource">Create</button></span>
+                <div class="buttons-sidebyside">
+                    <button type="submit" id="button-doAddSource">Create</button>
+                    <button type="button" onclick="location.href='/sources.html'">Return</button>
+                </div>
 
             </form>
         </div>
@@ -38,7 +121,10 @@
                 Source <input type="text" name="source"><br/>
                 Keyword <input type="text" name="keyword"><br/>
         
-                <span><button type="submit" id="button-doUpdateSource">Update</button></span>
+                <div class="buttons-sidebyside">
+                    <button type="submit" id="button-doUpdateSource">Update</button>
+                    <button type="button" onclick="location.href='/sources.html'">Return</button>
+                </div>
 
             </form>
         </div>
@@ -58,7 +144,7 @@
             <td>${item.keyword}</td>
             <td><button class="update-button" data-id="${item.id}" onclick="showUpdateSource(this)">Update</button></td>
             <td><button class="delete-button" data-id="${item.id}" onclick="deleteSource(event)">Delete</button></td>
-            <td><button class="results-button" data-id="${item.id}" onclick="showResults(this)">Results</button></td>`;
+            <td class="center-button"><button class="results-button" data-id="${item.id}" onclick="showResults(this)">Results</button></td>`;
             document.querySelector('#sourceTable').appendChild(row);
             });
         });
@@ -69,6 +155,9 @@
             document.getElementById("createLabel").style.display = "inline"
             document.getElementById("button-showAddSource").style.display = "none"
             document.getElementById("sourceTable").style.display = "none"  
+            document.getElementById("sourceIDs").style.display = "none" 
+            document.getElementById("blurb1").style.display = "none"
+            document.getElementById("blurb2").style.display = "none"  
         }
 
         // Adding sources input by the user to the table
@@ -120,6 +209,10 @@
             document.getElementById("button-doUpdateSource").style.display = "block"
             document.getElementById("updateLabel").style.display = "inline"
             document.getElementById("sourceTable").style.display = "none"
+            document.getElementById("sourceIDs").style.display = "none" 
+            document.getElementById("button-showAddSource").style.display = "none" 
+            document.getElementById("blurb1").style.display = "none"
+            document.getElementById("blurb2").style.display = "none"  
             rowElement= buttonElement.parentNode.parentNode
             source = getSourceFromRow(rowElement)
             populateFormWithSource(source)
@@ -155,11 +248,6 @@
                 document.body.innerHTML = html;
                 });
             }
-
-
-        
-            
-
 
     </script>
 </html>

@@ -1,16 +1,23 @@
-<!-- articles.html -->
-
-<h1>News Articles</h1>
-
-<a href="/sources.html">Return to sources</a>
-
-{% for article in articles %}
-  <h2>{{ article.title }}</h2>
-  <p>by {{ article.author }}</p>
-  <p>{{ article.description }}</p>
-  <p>Source: {{ article.source }}</p>
-  <a href="{{ article.url }}">Read more</a>
-{% endfor %}
-
-<!-- index.html -->
-<a href="/articles">View articles</a>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Articles</title>
+        <link rel="shortcut icon" href="/favicon.ico?">
+        <link rel="stylesheet" href="articles.css">
+        <!--To ensure the page will adapt size depending on screen size https://www.w3schools.com/css/css_rwd_viewport.asp -->
+	      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>News Articles</h1>
+        <a href="/sources.html">Return to sources</a>
+        {% for article in articles %}
+        <div class="article-style">
+            <h2>{{ article.title }}</h2>
+            <p>by {{ article.author }}</p>
+            <p>{{ article.description }}</p>
+            <p>Source: {{ article.source.name }}</p>
+            <a href="{{ article.url }}" target="_blank">Read more</a>
+      </div>
+      {% endfor %}
+    </body>
+</html>
