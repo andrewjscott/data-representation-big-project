@@ -105,4 +105,9 @@ def update_source(id):
 
 
 if __name__ == "__main__":
+    newsDAO.create_database()
+    newsDAO.create_source_table()
+    newsDAO.create_article_table()
+    # newsDAO.first_source()
+    print("testing")
     app.run(debug=True)

@@ -29,22 +29,32 @@ class NewsDAO:
         self.cursor.close()
 
     def create_source(self, values):     
-       cursor = self.get_cursor()
-       sql="insert into newssource (source, keyword) values (%s,%s)"
-       cursor.execute(sql, values)
-       self.connection.commit()
-       newid = cursor.lastrowid
-       self.close_all()
-       return newid
+        cursor = self.get_cursor()
+        sql="insert into newssource (source, keyword) values (%s,%s)"
+        cursor.execute(sql, values)
+        self.connection.commit()
+        newid = cursor.lastrowid
+        self.close_all()
+        return newid
+    
+    # def first_source(self):
+    #     cursor = self.get_cursor()
+    #     values = ("bbc-news", "stretch")
+    #     sql=("INSERT IGNORE INTO newssource (source, keyword) VALUES (%s, %s)")
+    #     cursor.execute(sql, values)
+    #     self.connection.commit()
+    #     newid = cursor.lastrowid
+    #     self.close_all()
+    #     return newid
 
     def create_article(self, values):     
-       cursor = self.get_cursor()
-       sql="insert into newsarticles (title, author, description, date_published, url, source) values (%s,%s,%s,%s,%s,%s)"
-       cursor.execute(sql, values)
-       self.connection.commit()
-       newid = cursor.lastrowid
-       self.close_all()
-       return newid
+        cursor = self.get_cursor()
+        sql="insert into newsarticles (title, author, description, date_published, url, source) values (%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql, values)
+        self.connection.commit()
+        newid = cursor.lastrowid
+        self.close_all()
+        return newid
 
     def get_all_source(self):
         cursor = self.get_cursor()
@@ -116,7 +126,7 @@ class NewsDAO:
     def create_source_table(self):
         cursor = self.get_cursor()
         sql = """
-            CREATE TABLE newssource (
+            CREATE TABLE IF NOT EXISTS newssource (
             id INT PRIMARY KEY AUTO_INCREMENT,
             source VARCHAR(255),
             keyword VARCHAR(255))
@@ -129,7 +139,7 @@ class NewsDAO:
     def create_article_table(self):
         cursor = self.get_cursor()
         sql = """
-            CREATE TABLE newsarticles (
+            CREATE TABLE IF NOT EXISTS newsarticles (
             id INT PRIMARY KEY AUTO_INCREMENT,
             title VARCHAR(255),
             author VARCHAR(255),
@@ -149,16 +159,9 @@ class NewsDAO:
             password=   self.password   
         )
         self.cursor = self.connection.cursor()
-        sql = "create database " + self.database
+        sql = "CREATE database IF NOT EXISTS " + self.database
         self.cursor.execute(sql)
         self.connection.commit()
         self.close_all()
 
 newsDAO = NewsDAO()
-
-if __name__ == "__main__":
-    newsDAO.create_database()
-    #newsDAO.create_source_table()
-    #newsDAO.create_article_table()
-
-    print("testing")
