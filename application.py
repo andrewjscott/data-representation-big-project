@@ -1,3 +1,11 @@
+"""
+An application in Flask that makes allows the user to enter a news source and keyword(s).
+The user can then view a summary of the articles.
+The sources/keywords provided by the user are stored in a mysql table.
+Details about the articles returned are stored in a second mysql table.
+
+Author: Andrew Scott
+"""
 from flask import Flask, jsonify, request, abort
 import requests
 import dbconfig as cfg
@@ -43,6 +51,7 @@ def get_all_articles():
     results = newsDAO.get_all_articles()
     return jsonify(results)
 
+# Render the articles returned by NewsAPI with the all_articles.html template
 @app.route('/articles')
 def view_all_articles():
     articles = newsDAO.get_all_articles()
@@ -108,6 +117,6 @@ if __name__ == "__main__":
     newsDAO.create_database()
     newsDAO.create_source_table()
     newsDAO.create_article_table()
-    # newsDAO.first_source()
+    newsDAO.first_source()
     print("testing")
     app.run(debug=True)

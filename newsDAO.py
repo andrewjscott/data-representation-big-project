@@ -1,3 +1,10 @@
+"""
+An object that interacts with mysql to create and interact with mysql tables for the purpose of 
+sending requests to NewsAPI and storing/viewing the returned articles.
+
+Author: Andrew Scott
+"""
+
 import mysql.connector
 import dbconfig as cfg
 class NewsDAO:
@@ -28,6 +35,7 @@ class NewsDAO:
         self.connection.close()
         self.cursor.close()
 
+    # Adds a new row of source information to the sources table
     def create_source(self, values):     
         cursor = self.get_cursor()
         sql="insert into newssource (source, keyword) values (%s,%s)"
@@ -37,16 +45,24 @@ class NewsDAO:
         self.close_all()
         return newid
     
-    # def first_source(self):
-    #     cursor = self.get_cursor()
-    #     values = ("bbc-news", "stretch")
-    #     sql=("INSERT IGNORE INTO newssource (source, keyword) VALUES (%s, %s)")
-    #     cursor.execute(sql, values)
-    #     self.connection.commit()
-    #     newid = cursor.lastrowid
-    #     self.close_all()
-    #     return newid
+    # Code to add a row with a source and keyword to the table by default whenever the table is created for the first time
+    def first_source(self):
+        cursor = self.get_cursor()
+        values = ("bbc-news", "stretch")
+        sql = "SELECT * FROM newssource"
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        if len(rows) == 0:
+            sql="INSERT IGNORE INTO newssource (source, keyword) VALUES (%s, %s)"
+            cursor.execute(sql, values)
+            self.connection.commit()
+            newid = cursor.lastrowid
+            self.close_all()
+            return newid
+        else:
+            pass
 
+    # Adds a row that contains article information returned from NewsAPI
     def create_article(self, values):     
         cursor = self.get_cursor()
         sql="insert into newsarticles (title, author, description, date_published, url, source) values (%s,%s,%s,%s,%s,%s)"
@@ -56,6 +72,7 @@ class NewsDAO:
         self.close_all()
         return newid
 
+    # Return everything from the sources table
     def get_all_source(self):
         cursor = self.get_cursor()
         sql="select * from newssource"
@@ -67,6 +84,7 @@ class NewsDAO:
         self.close_all()
         return return_array
 
+    # Return everything from the article table
     def get_all_articles(self):
         cursor = self.get_cursor()
         sql="select * from newsarticles"
@@ -78,6 +96,7 @@ class NewsDAO:
         self.close_all()
         return return_array
 
+    # Return a row from the source table based on the provided id
     def get_id_source(self, id):
         cursor = self.get_cursor()
         sql="select * from newssource where id = %s"
@@ -88,6 +107,7 @@ class NewsDAO:
         self.close_all()
         return return_value
 
+    # Adds each row from the source table to a dictionary
     def convert_to_dictionary_source(self, result):
         colnames=['id','source', "keyword"]
         item = {}   
@@ -97,6 +117,7 @@ class NewsDAO:
                 item[col_name] = value       
         return item
 
+    # Adds each row from the article table to a dictionary
     def convert_to_dictionary_article(self, result):
         colnames=['id','title', "author", "description", "date_published", "url", "source"]
         item = {}   
@@ -106,6 +127,7 @@ class NewsDAO:
                 item[col_name] = value       
         return item
 
+    # Allows the user to change values in the source table
     def update_source(self, values):
         cursor = self.get_cursor()
         sql="update newssource set source= %s, keyword=%s  where id = %s"
@@ -113,6 +135,7 @@ class NewsDAO:
         self.connection.commit()
         self.close_all()
 
+    # Allows the user to delete a row from the source table
     def delete_source(self, id):
         cursor = self.get_cursor()
         sql="delete from newssource where id = %s"
@@ -152,6 +175,7 @@ class NewsDAO:
         self.connection.commit()
         self.close_all()
 
+    # If the database for this project does not exist, this will create it
     def create_database(self):
         self.connection = mysql.connector.connect(
             host=       self.host,
