@@ -145,7 +145,16 @@ class NewsDAO:
         self.close_all()
         print("Entry deleted")
 
-    # Create a database that stores user input information such as the name of the source, url, and keyword
+    # When a user tries to logs in, check if the entered credentials match the table credentials
+    def check_users(self, account_type, password):
+        cursor = self.get_cursor()
+        sql = 'SELECT * FROM users WHERE account_type = %s AND password = %s'
+        values = (account_type, password)
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+        return result
+
+    # Create a database table that stores user input information such as the name of the source, url, and keyword
     def create_source_table(self):
         cursor = self.get_cursor()
         sql = """
@@ -158,7 +167,7 @@ class NewsDAO:
         self.connection.commit()
         self.close_all()
     
-    # Database to store the results returned based on the information provided by the user in the source table
+    # Database table to store the results returned based on the information provided by the user in the source table
     def create_article_table(self):
         cursor = self.get_cursor()
         sql = """
@@ -174,6 +183,40 @@ class NewsDAO:
         cursor.execute(sql)
         self.connection.commit()
         self.close_all()
+
+    # Database table to store two user accounts, admin and restricted
+    def create_users_table(self):
+        cursor = self.get_cursor()
+        sql = """
+            CREATE TABLE IF NOT EXISTS users (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            account_type VARCHAR(255),
+            password VARCHAR(255))
+            """
+        cursor.execute(sql)
+        self.connection.commit()
+        self.close_all()
+    
+    # Add two users to the users table
+    def add_users(self):
+        cursor = self.get_cursor()
+        values1 = ("admin", "abc")
+        values2 = ("restricted", "xyz")
+        sql = "SELECT * FROM users"
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        if len(rows) == 0:
+            sql="INSERT IGNORE INTO users (account_type, password) VALUES (%s, %s)"
+            cursor.execute(sql, values1)
+            self.connection.commit()
+            newid = cursor.lastrowid
+            cursor.execute(sql, values2)
+            self.connection.commit()
+            newid2 = cursor.lastrowid
+            self.close_all()
+            return newid, newid2
+        else:
+            pass
 
     # If the database for this project does not exist, this will create it
     def create_database(self):

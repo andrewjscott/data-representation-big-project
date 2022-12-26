@@ -1,3 +1,4 @@
+<!--Webpage for displaying the MySQL table containing sources and keywords and allowing the user to perform CRUD operations on it-->
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,6 +10,9 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        {% if 'logged_in' in session and session['logged_in'] %}
+            <p>Welcome, {{ session['account_type'] }}</p>
+            <p><a href="/logout">Logout</a></p>
         <h1>Sources and Keywords</h1>
         <div class="blurb" id="blurb1">
             The table below can be used to retreive news articles using NewsAPI based on the source provided and keywords.<br/>
@@ -25,8 +29,10 @@
                         <th>id</th>
                         <th>Source</th>
                         <th>Keyword</th>
+                        {% if session['account_type'] == 'admin' %}
                         <th>Update</th>
                         <th>Delete</th>
+                        {% endif %}
                         <th>View Article Results</th>
                 </tr>  
             
@@ -128,9 +134,12 @@
 
             </form>
         </div>
+        {% else %}
+            <p>You are not logged in. <a href="/login">Login</a></p>
+        {% endif %}
     </body>
     <script>
-        //Using fetch to populate table with MySQL database table content
+        // Using fetch to populate table with MySQL database table content
         // https://dev.to/duhbhavesh/how-to-use-fetch-api-for-crud-operations-57a0
         fetch('/sourcesjson')
         .then(response => response.json())
@@ -142,8 +151,10 @@
             <td>${item.id}</td>
             <td>${item.source}</td>
             <td>${item.keyword}</td>
+            {% if session['account_type'] == 'admin' %}
             <td><button class="update-button" data-id="${item.id}" onclick="showUpdateSource(this)">Update</button></td>
             <td><button class="delete-button" data-id="${item.id}" onclick="deleteSource(event)">Delete</button></td>
+            {% endif %}
             <td class="center-button"><button class="results-button" data-id="${item.id}" onclick="showResults(this)">Results</button></td>`;
             document.querySelector('#sourceTable').appendChild(row);
             });

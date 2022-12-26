@@ -1,3 +1,5 @@
+<!--Webpage for displaying the articles returned from NewsAPI-->
+<!--https://flask.palletsprojects.com/en/2.2.x/tutorial/templates/-->
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,7 +11,7 @@
     </head>
     <body>
         <h1>News Articles</h1>
-        <a href="/sources.html">Return to sources</a>
+        <a href="/sources">Return to sources</a>
         {% for article in articles %}
         <div class="article-style">
             <h2>{{ article.title }}</h2>

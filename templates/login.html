@@ -1,0 +1,32 @@
+<!--Webpage for logging in-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <link rel="shortcut icon" href="/favicon.ico?">
+        <link rel="stylesheet" href="sources.css">
+        <!--To ensure the page will adapt size depending on screen size https://www.w3schools.com/css/css_rwd_viewport.asp -->
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="blurb" id="blurb1"></br></br>
+            Welcome. This is an application built using Python (Flask), MySQL, and HTML (Ajax) that makes requests of NewsAPI to return
+            news articles based on user input. You can log in as either an admin or a restricted user. The admin can add, update, and delete news
+            sources and keywords from the sources table and view results. The restricted user can only add new sources and view results, they
+            cannot update nor delete table entries. Normally I wouldn't include passwords here, but for ease of access you can log in as an admin 
+            with the password abc. You can log in as a restriced user with the password xyz.</br></br>
+        </div>
+        <form action="/login" method="POST">
+            <label for="account_type">Account Type:</label></br>
+            <select id="account_type" name="account_type">
+                <option value="admin">Admin</option>
+                <option value="restricted">Restricted</option>
+            </select></br></br>
+            <label for="password">Password:</label></br>
+            <input type="password" id="password" name="password">
+            </br></br>
+            <input type="submit" value="Submit">
+        </form>           
+    </body>
+</html>

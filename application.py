@@ -6,7 +6,7 @@ Details about the articles returned are stored in a second mysql table.
 
 Author: Andrew Scott
 """
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, session, redirect, url_for, flash
 import requests
 import dbconfig as cfg
 from flask import render_template
@@ -15,6 +15,7 @@ from datetime import datetime
 import mysql.connector
 
 app = Flask(__name__, static_url_path='', static_folder='static')
+app.secret_key = cfg.secret_key
 
 # Use the source id and keyword provided to fetch news articles using NewsAPI
 def get_articles(source, keyword):
@@ -87,6 +88,11 @@ def articles(id):
     # Use render template to display articles - https://www.geeksforgeeks.org/flask-rendering-templates/
     return render_template("articles.html", articles=articles)
 
+# Flask route for the sources webpage
+@app.route('/sources', methods=['GET'])
+def sources():
+    return render_template("sources.html")
+
 # Add the sources to the sources mysql table 
 @app.route('/sources', methods=['POST'])
 def add_sources():
@@ -111,12 +117,44 @@ def update_source(id):
     newsDAO.update_source(values)
     return jsonify({"done":True})
 
+# Code for loggin in adapted from: https://flask.palletsprojects.com/en/2.1.x/quickstart/#sessions
+@app.route('/')
+def index():
+    if 'account_type' in session:
+        return f'Logged in as {session["account_type"]}'
+    return redirect(url_for('login'))
 
+# Login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        account_type = request.form['account_type']
+        password = request.form['password']
+        result = newsDAO.check_users(account_type, password)
+        session['account_type'] = account_type
+        if result:
+            session['logged_in'] = True
+            return redirect(url_for('sources'))
+        else:
+            return render_template('login.html')
+    else:
+        return render_template('login.html')
+
+# Logout
+@app.route('/logout')
+def logout():
+    # Remove the logged_in key from the session
+    session.pop('logged_in', None)
+    # Redirect the user to the login page
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     newsDAO.create_database()
     newsDAO.create_source_table()
     newsDAO.create_article_table()
     newsDAO.first_source()
+    newsDAO.create_users_table()
+    newsDAO.add_users()
     print("testing")
     app.run(debug=True)

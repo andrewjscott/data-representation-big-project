@@ -4,3 +4,9 @@ mysql = {
     'password':"",
     'database':""
 }
+
+api_keys = {
+    'newsapikey':""
+}
+
+secret_key = ""
