@@ -14,8 +14,11 @@
             Welcome. This is an application built using Python (Flask), MySQL, and HTML (Ajax) that makes requests of NewsAPI to return
             news articles based on user input. You can log in as either an admin or a restricted user. The admin can add, update, and delete news
             sources and keywords from the sources table and view results. The restricted user can only add new sources and view results, they
-            cannot update nor delete table entries. Normally I wouldn't include passwords here, but for ease of access you can log in as an admin 
-            with the password abc. You can log in as a restriced user with the password xyz.</br></br>
+            cannot update nor delete table entries.</br></br>
+            
+            Normally I wouldn't include passwords here, but for ease of access you can log in with the following:</br> 
+            Admin - password: abc (The Admin account can create, update, delete sources, and view returned articles.)</br>
+            Restricted - password: xyz (The Restricted account can only create sources and view returned articles.)</br></br>
         </div>
         <form action="/login" method="POST">
             <label for="account_type">Account Type:</label></br>

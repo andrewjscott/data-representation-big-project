@@ -122,12 +122,11 @@ def update_source(id):
 def index():
     if 'account_type' in session:
         return render_template('sources.html')
-    return redirect(url_for('login'))
+    return render_template('login.html')
 
 # Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
     if request.method == 'POST':
         account_type = request.form['account_type']
         password = request.form['password']
@@ -144,9 +143,7 @@ def login():
 # Logout
 @app.route('/logout')
 def logout():
-    # Remove the logged_in key from the session
     session.pop('logged_in', None)
-    # Redirect the user to the login page
     return redirect(url_for('login'))
 
 if __name__ == "__main__":

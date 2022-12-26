@@ -1,1 +1,32 @@
-# data-representation-big-project
+# Data Representation Project - NewsAPI
+
+This is an application written in using Python 3.8.8, MySQL, and HTML. The application uses Flask to make calls to NewsAPI in order to retrieve news articles based on the input provided by users. Users input a news source and keyword, and they can then view a summary of the articles returned from [NewsAPI](https://newsapi.org/). 
+
+There are two user accounts for logging in - Admin and Restricted. The Admin account can create, update, delete sources, and view returned articles. The Restricted account can only create sources and view returned articles. 
+
+This repository contains the following folders and files:   
+1. static - this folder contains the following files:   
+(a) articles.css (Contains CSS code for styling articles.html)   
+(b) favicon.ico (Loads a favicon in the tab when a webpage is opened)   
+(c) sources.css (Contains CSS for styling all other HTML files)    
+2. templates - this folder contains the following files:   
+(a) all_articles.html (Webpage to display the data contained in the MySQL table that stores details about the articles returned by NewsAPI)    
+(b) articles.html (Webpage to display summaries of the articles returned by NewsAPI based on the source and keyword provided by the user)    
+(c) login.html (Webpage that allows the user to login to use the application)    
+(d) sources.html (Webpage that shows the MySQL table containing the sources and keyword provided by users and allows them to perform CRUD operations)    
+3.  .gitignore - Contains information for which files should not be uploaded when the repository is pushed to github.
+4. README.md - Contains and overview about this repository, its files, and how to use it.   
+5. application.py - Contains the python code to make Flask calls to NewsAPI based on the values contained in the MySQL tables and the options selected by the user on the interface provided by the HTML webpages.
+6. dbconfig_template.py - A template for the user to provide details to connect to MySQL and NewsAPI.    
+7. newsDAO.py - Contains the python code to interact with MySQL.   
+8. requirements.txt - Contains the python modules used by the application.     
+
+There are two ways to use this application.
+
+## PythonAnywhere
+The application is hosted on PythonAnywhere, which is the simpliest way to use it. Visit the website http://andrewjscott.pythonanywhere.com/ and follow the on screen instructions to log in. 
+
+## Clone Repository and run on Local Machine
+This repository can also be cloned and run locally. Ensure thatPython and MySQL are already installed on your machine.   
+
+1. 
