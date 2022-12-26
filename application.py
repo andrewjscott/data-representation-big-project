@@ -121,7 +121,7 @@ def update_source(id):
 @app.route('/')
 def index():
     if 'account_type' in session:
-        return f'Logged in as {session["account_type"]}'
+        return render_template('sources.html')
     return redirect(url_for('login'))
 
 # Login
