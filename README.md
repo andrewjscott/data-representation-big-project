@@ -27,6 +27,11 @@ There are two ways to use this application.
 The application is hosted on PythonAnywhere, which is the simpliest way to use it. Visit the website http://andrewjscott.pythonanywhere.com/ and follow the on screen instructions to log in. 
 
 ## Clone Repository and run on Local Machine
-This repository can also be cloned and run locally. Ensure thatPython and MySQL are already installed on your machine.   
+This repository can also be cloned and run locally. Ensure that Python and MySQL are already installed on your machine. Note that these instructions are for Windows. Some adaptations might be needed for users on Mac or Linux.  
 
-1. 
+1. Clone this repository by running the following code on your command line: ```git clone https://github.com/andrewjscott/data-representation-big-project.git```   
+2. Navigate to the cloned folder and launch a virtual environment by first running the following: ```python -m venv venv``` and press return, and then run: ```.\venv\Scripts\activate.bat```  
+3. Rename the file dbconfig_template.py to dbconfig.py and edit the file so that the host is "localhost", user, and password are set to the details of your MySQL, and database is set as project. Enter your NewsAPI key to this file also. If you do not have one, you can get one free from [the NewsAPI website](https://newsapi.org/). Enter any random string for the secret_key variable.
+4. Install the required modules by running the following code: ```pip install -r requirements.txt```    
+5. Run the application with the following code: ```python application.py```    
+6. The command line should tell you what url the server is now running on (e.g Running on http://127.0.0.1:5000/). Open this address using your web browser and follow the onscreen instructions to use the application.
