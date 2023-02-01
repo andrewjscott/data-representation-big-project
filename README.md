@@ -24,7 +24,7 @@ This repository contains the following folders and files:
 There are two ways to use this application.
 
 ## PythonAnywhere
-The application is hosted on PythonAnywhere, which is the simpliest way to use it. Visit the website http://andrewjscott.pythonanywhere.com/ and follow the on screen instructions to log in. 
+The application is hosted on PythonAnywhere, which is the simpliest way to use it. Visit the website http://andrewjscott.pythonanywhere.com/login and follow the on screen instructions to log in. Link valid as of 1st February 2023, but hosting by PythonAnywhere may expire.
 
 ## Clone Repository and run on Local Machine
 This repository can also be cloned and run locally. Ensure that Python and MySQL are already installed on your machine. Note that these instructions are for Windows. Some adaptations might be needed for users on Mac or Linux.  
